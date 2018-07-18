@@ -1,0 +1,7 @@
+{
+  "program_name" : "program",
+  "object_type" : "TexturedMesh",
+  "vertices": [-1.0,  1.0, 0.0, -1.0, -1.0, 0.0, 1.0, -1.0, 0.0, 1.0,  1.0, 0.0],
+  "texture_coordinates": [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0],
+  "indices": [0, 1, 2, 0, 2, 3]
+}
