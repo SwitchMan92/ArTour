@@ -11,24 +11,12 @@ import com.google.ar.core.Session;
 
 public class MyGLSurfaceView extends GLSurfaceView {
 
-    private final MyGLRenderer mRenderer;
+    //private final MyGLRenderer mRenderer;
 
-    public MyGLSurfaceView(Context context){
+    public MyGLSurfaceView(Context context) {
         super(context);
 
-        // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2);
         setPreserveEGLContextOnPause(true);
-
-        mRenderer = new MyGLRenderer(getContext());
-
-        // Set the Renderer for drawing on the GLSurfaceView
-        setRenderer(mRenderer);
-        setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
-
-    public void setSession(Session p_Session) {
-        this.mRenderer.setSession(p_Session);
-    }
-
 }

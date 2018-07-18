@@ -15,6 +15,8 @@ import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
+
+import fr.cnam.nsy209.artour2.engine.shading.program.loader.ProgramLoader;
 import fr.common.helpers.CameraPermissionHelper;
 
 /**
@@ -26,12 +28,18 @@ public class OpenGLES20Activity extends AppCompatActivity {
     private MyGLSurfaceView mGLView;
     private Session m_Session;
     private boolean installRequested;
+    private MyGLRenderer mRenderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ProgramLoader.setContext(this);
+
         mGLView = new MyGLSurfaceView(this);
+        mRenderer = new MyGLRenderer(this);
+        mGLView.setRenderer(this.mRenderer);
+        this.mGLView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(
@@ -39,7 +47,6 @@ public class OpenGLES20Activity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         this.installRequested = false;
-        ///this.updateSession();
         setContentView(mGLView);
     }
 
@@ -63,7 +70,7 @@ public class OpenGLES20Activity extends AppCompatActivity {
                 }
 
                 this.m_Session = new Session(/* context= */ this);
-                this.mGLView.setSession(this.m_Session);
+                this.mRenderer.setSession(this.m_Session);
                 this.m_Session.resume();
 
             } catch (UnavailableArcoreNotInstalledException
@@ -97,6 +104,7 @@ public class OpenGLES20Activity extends AppCompatActivity {
         super.onResume();
         this.updateSession();
         this.mGLView.onResume();
+        this.mRenderer.setSession(this.m_Session);
     }
 
     @Override
@@ -105,6 +113,7 @@ public class OpenGLES20Activity extends AppCompatActivity {
         if (this.m_Session != null) {
             this.mGLView.onPause();
             this.m_Session.pause();
+            this.mRenderer.setSession(this.m_Session);
         }
     }
 

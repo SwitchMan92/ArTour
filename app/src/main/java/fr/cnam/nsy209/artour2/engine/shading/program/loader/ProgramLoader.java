@@ -21,10 +21,18 @@ public class ProgramLoader {
 
     private ProgramLoader() {}
 
+    public static void setContext(Context p_Context) {
+        g_Context = p_Context;
+    }
+
     public ProgramLoader getInstance() { return g_ProgramLoaderInstance; }
 
     public static IProgram getProgram(String p_ProgramName) throws java.io.IOException {
         return ProgramLoader.loadProgram(p_ProgramName);
+    }
+
+    public static ConcurrentHashMap<String, IProgram> getPrograms() {
+        return g_Programs;
     }
 
     public static IProgram loadProgram(String p_ProgramName) throws java.io.IOException {
