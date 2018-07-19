@@ -1,5 +1,7 @@
 package fr.cnam.nsy209.artour2.engine.rendering;
 
+import android.opengl.GLES10;
+import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLU;
 import android.util.Log;
@@ -16,7 +18,7 @@ import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
  * Created by ng6fd11 on 17/05/2018.
  */
 
-public class Mesh extends ACRenderable {
+public class Mesh extends ACRenderable implements IMesh {
 
     protected FloatBuffer       m_VertexBuffer;
     protected ShortBuffer       m_IndexBuffer;
@@ -25,6 +27,17 @@ public class Mesh extends ACRenderable {
     protected   int[]           m_IndexBufferObject;
     protected   float[]         m_Color;
     protected   boolean         m_DepthRendering;
+    protected   int             m_DrawMode;
+
+
+    public void setWireframe(boolean p_Wireframe){
+        if (p_Wireframe)
+            this.m_DrawMode = GLES20.GL_LINES;
+        else
+            this.m_DrawMode = GLES20.GL_TRIANGLES;
+    }
+
+    public boolean getWireframe() { return this.m_DrawMode == GLES20.GL_LINES; }
 
     public void setDepthRendering(boolean p_DepthRendering) {
         this.m_DepthRendering = p_DepthRendering;
@@ -39,6 +52,8 @@ public class Mesh extends ACRenderable {
     public Mesh() {
         this.m_VertexBufferObject = new int[1];
         this.m_IndexBufferObject = new int[1];
+        this.setDepthRendering(true);
+        this.setWireframe(false);
     }
 
     public void setVertices(float[] p_Vertices) {
@@ -70,13 +85,12 @@ public class Mesh extends ACRenderable {
     }
 
     public void render() {
-
         this.getProgram().setActive(true);
 
         this.bindBuffers();
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, this.m_IndexBufferObject[0]);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, this.m_IndexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, 0);
+        GLES20.glDrawElements(this.m_DrawMode, this.m_IndexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, 0);
 
         this.unbindBuffers();
 

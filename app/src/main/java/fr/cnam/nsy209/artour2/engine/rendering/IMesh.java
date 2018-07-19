@@ -5,5 +5,7 @@ public interface IMesh extends IRenderable {
     void    setVertices         (float[] p_Vertices);
     void    setIndices          (short[] p_Indices);
     void    setDepthRendering   (boolean p_DepthRendering);
+    void    setWireframe        (boolean p_Wireframe);
     boolean getDepthRendering   ();
+    boolean getWireframe        ();
 }
