@@ -1,4 +1,6 @@
-package fr.cnam.nsy209.artour2.engine.rendering;
+package fr.cnam.nsy209.artour2.engine.rendering.mesh;
+
+import fr.cnam.nsy209.artour2.engine.rendering.IRenderable;
 
 public interface IMesh extends IRenderable {
     void    setColor            (float[] Color);

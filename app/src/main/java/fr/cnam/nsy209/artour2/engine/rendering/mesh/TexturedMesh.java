@@ -1,4 +1,4 @@
-package fr.cnam.nsy209.artour2.engine.rendering;
+package fr.cnam.nsy209.artour2.engine.rendering.mesh;
 
 import android.opengl.GLES20;
 import android.opengl.GLU;
@@ -10,7 +10,6 @@ import java.nio.FloatBuffer;
 import java.util.Iterator;
 
 import fr.cnam.nsy209.artour2.engine.rendering.texture.ITexture;
-import fr.cnam.nsy209.artour2.engine.rendering.texture.Texture;
 import fr.cnam.nsy209.artour2.engine.rendering.texture.TextureParameterI;
 
 /**
@@ -18,7 +17,7 @@ import fr.cnam.nsy209.artour2.engine.rendering.texture.TextureParameterI;
  */
 
 
-public class TexturedMesh extends Mesh implements ITextured {
+public class TexturedMesh extends Mesh implements ITexturedMesh {
 
     protected FloatBuffer   m_TextureCoordinatesBuffer;
     private int[]           m_Textures = new int[1];

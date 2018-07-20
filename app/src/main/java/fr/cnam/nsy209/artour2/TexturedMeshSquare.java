@@ -1,6 +1,6 @@
 package fr.cnam.nsy209.artour2;
 
-import fr.cnam.nsy209.artour2.engine.rendering.TexturedMesh;
+import fr.cnam.nsy209.artour2.engine.rendering.mesh.TexturedMesh;
 
 /**
  * Created by ng6fd11 on 17/05/2018.

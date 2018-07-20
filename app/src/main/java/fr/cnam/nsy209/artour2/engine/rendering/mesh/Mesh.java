@@ -1,7 +1,5 @@
-package fr.cnam.nsy209.artour2.engine.rendering;
+package fr.cnam.nsy209.artour2.engine.rendering.mesh;
 
-import android.opengl.GLES10;
-import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLU;
 import android.util.Log;
@@ -11,7 +9,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
+import fr.cnam.nsy209.artour2.engine.rendering.ACRenderable;
 
 
 /**

@@ -6,12 +6,10 @@ import android.util.Log;
 
 import com.google.ar.core.Session;
 
-import fr.cnam.nsy209.artour2.MyGLRenderer;
 import fr.cnam.nsy209.artour2.TexturedMeshSquare;
-import fr.cnam.nsy209.artour2.engine.rendering.IMesh;
+import fr.cnam.nsy209.artour2.engine.rendering.mesh.IMesh;
 import fr.cnam.nsy209.artour2.engine.rendering.texture.Texture;
 import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
-import fr.cnam.nsy209.artour2.engine.shading.program.Program;
 import fr.cnam.nsy209.artour2.engine.shading.program.loader.ProgramLoader;
 
 public class ArTourScene extends Scene {

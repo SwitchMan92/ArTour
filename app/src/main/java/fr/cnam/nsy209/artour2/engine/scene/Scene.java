@@ -6,15 +6,10 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 
 import fr.cnam.nsy209.artour2.IEngineObject;
-import fr.cnam.nsy209.artour2.engine.rendering.ACRenderable;
-import fr.cnam.nsy209.artour2.engine.rendering.IMesh;
-import fr.cnam.nsy209.artour2.engine.rendering.IRenderable;
-import fr.cnam.nsy209.artour2.engine.rendering.Mesh;
+import fr.cnam.nsy209.artour2.engine.rendering.mesh.IMesh;
 import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
 import fr.cnam.nsy209.artour2.engine.shading.program.loader.ProgramLoader;
 
