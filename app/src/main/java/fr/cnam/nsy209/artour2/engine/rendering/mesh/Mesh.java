@@ -4,12 +4,15 @@ import android.opengl.GLES20;
 import android.opengl.GLU;
 import android.util.Log;
 
+import com.google.ar.core.Pose;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import fr.cnam.nsy209.artour2.engine.rendering.ACRenderable;
+import fr.cnam.nsy209.artour2.engine.rendering.common.ACRenderable;
+import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
 
 
 /**
@@ -26,13 +29,49 @@ public class Mesh extends ACRenderable implements IMesh {
     protected   float[]         m_Color;
     protected   boolean         m_DepthRendering;
     protected   int             m_DrawMode;
+    protected   Pose            m_Pose;
+    protected   float[]         m_ModelMatrix;
 
+
+    public float[] getModelMatrix() {
+        return this.m_ModelMatrix;
+    }
+
+    private void updateModelMatrix() {
+        float[] l_Matrix = new float[16];
+        this.m_Pose.toMatrix(l_Matrix, 0);
+    }
+
+    public void setPose(Pose p_Pose) {
+        this.m_Pose = p_Pose;
+        this.updateModelMatrix();
+    };
+
+    public Pose getPose(){ return this.m_Pose; }
 
     public void setWireframe(boolean p_Wireframe){
         if (p_Wireframe)
             this.m_DrawMode = GLES20.GL_LINES;
         else
             this.m_DrawMode = GLES20.GL_TRIANGLES;
+    }
+
+    public float[] getPosition() {
+        return this.m_Pose.getTranslation();
+    }
+
+    public Pose getRotation() {
+        return this.m_Pose.extractRotation();
+    }
+
+    public void setPosition(float p_X, float p_Y, float p_Z) {
+        this.m_Pose = new Pose(new float[]{p_X, p_Y, p_Z}, new float[]{this.m_Pose.qx(), this.m_Pose.qy(), this.m_Pose.qz(), this.m_Pose.qw()});
+        this.updateModelMatrix();
+    }
+
+    public void setRotation(float p_Yaw, float p_Pitch, float p_Roll) {
+        this.m_Pose = new Pose(this.getPosition(), new float[]{p_Yaw, p_Pitch, p_Roll, this.m_Pose.qw()});
+        this.updateModelMatrix();
     }
 
     public boolean getWireframe() { return this.m_DrawMode == GLES20.GL_LINES; }
@@ -52,6 +91,7 @@ public class Mesh extends ACRenderable implements IMesh {
         this.m_IndexBufferObject = new int[1];
         this.setDepthRendering(true);
         this.setWireframe(false);
+        this.setPose(new Pose(new float[]{0f, 0f, 0f}, new float[]{0f, 0f, 0f, 0f}));
     }
 
     public void setVertices(float[] p_Vertices) {
@@ -70,22 +110,16 @@ public class Mesh extends ACRenderable implements IMesh {
         m_IndexBuffer.position(0);
     }
 
-    public void bindBuffers() {
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, this.m_VertexBufferObject[0]);
-
-        GLES20.glVertexAttribPointer(this.getProgram().getAttributes().get("a_Position"), 3,
-                GLES20.GL_FLOAT,false, 0, 0);
-
-        GLES20.glEnableVertexAttribArray(this.getProgram().getAttributes().get("a_Position"));
-
-        if (this.getProgram().getUniforms().containsKey("a_Color"))
-            GLES20.glUniform4fv(this.getProgram().getUniforms().get("a_Color"), 1, this.m_Color, 0);
-    }
-
-    public void render() {
+    public void render(float[] p_ViewMatrix, float[] p_ProjectionMatrix) {
         this.getProgram().setActive(true);
 
         this.bindBuffers();
+
+        if (this.getProgram().getUniforms().containsKey("m_View"))
+            GLES20.glUniformMatrix4fv(this.getProgram().getUniforms().get("m_View"), 1, false, p_ViewMatrix, 0);
+
+        if (this.getProgram().getUniforms().containsKey("m_Projection"))
+            GLES20.glUniformMatrix4fv(this.getProgram().getUniforms().get("m_Projection"), 1, false, p_ProjectionMatrix, 0);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, this.m_IndexBufferObject[0]);
         GLES20.glDrawElements(this.m_DrawMode, this.m_IndexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, 0);
@@ -98,10 +132,28 @@ public class Mesh extends ACRenderable implements IMesh {
         }
     }
 
+    public void bindBuffers() {
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, this.m_VertexBufferObject[0]);
+
+        GLES20.glVertexAttribPointer(this.getProgram().getAttributes().get("a_Position"), 3,
+                GLES20.GL_FLOAT,false, 0, 0);
+
+        GLES20.glEnableVertexAttribArray(this.getProgram().getAttributes().get("a_Position"));
+
+        if (this.getProgram().getUniforms().containsKey("a_Color"))
+            GLES20.glUniform4fv(this.getProgram().getUniforms().get("a_Color"), 1, this.m_Color, 0);
+
+        if (this.getProgram().getUniforms().containsKey("m_Model"))
+            GLES20.glUniform4fv(this.getProgram().getUniforms().get("m_Model"), 1, this.getModelMatrix(), 0);
+
+    }
+
     public void unbindBuffers() {
 
         if (this.getProgram().getUniforms().containsKey("a_Color"))
-            GLES20.glDisableVertexAttribArray(this.getProgram().getAttributes().get("a_Position"));
+            GLES20.glDisableVertexAttribArray(this.getProgram().getAttributes().get("a_Color"));
+
+        GLES20.glDisableVertexAttribArray(this.getProgram().getAttributes().get("a_Position"));
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);

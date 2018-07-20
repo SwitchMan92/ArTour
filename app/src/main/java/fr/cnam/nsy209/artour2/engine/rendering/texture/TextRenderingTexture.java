@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.opengl.GLES20;
+import android.opengl.GLUtils;
 
 
 public class TextRenderingTexture extends Texture {
@@ -33,7 +35,6 @@ public class TextRenderingTexture extends Texture {
     public float getTextSize() { return this.m_Paint.getTextSize(); }
 
     public void setText(String p_Text) {
-
         this.m_Paint.setColor(Color.BLACK);
         this.m_Canvas.drawPaint(this.m_Paint);
 
@@ -42,5 +43,9 @@ public class TextRenderingTexture extends Texture {
         this.m_Canvas.drawText(p_Text, 128, 128, this.m_Paint);
     }
 
+    public void loadBuffers() {
+        super.loadBuffers();
+        GLUtils.texImage2D(this.getTextureBind(), 0, this.m_Bitmap, 0);
+    }
 
 }

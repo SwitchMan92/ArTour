@@ -7,10 +7,8 @@ import android.util.Log;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.util.Iterator;
 
 import fr.cnam.nsy209.artour2.engine.rendering.texture.ITexture;
-import fr.cnam.nsy209.artour2.engine.rendering.texture.TextureParameterI;
 
 /**
  * Created by ng6fd11 on 21/05/2018.
@@ -58,38 +56,10 @@ public class TexturedMesh extends Mesh implements ITexturedMesh {
 
         GLES20.glGenTextures(m_Textures.length, m_Textures, 0);
 
-        if ((m_Textures.length > 0) && (this.m_Texture != null)) {
+        if ((this.m_Textures.length > 0) && (this.m_Texture != null)) {
 
             GLES20.glBindTexture(this.m_Texture.getTextureBind(), m_Textures[0]);
-
-            Iterator<TextureParameterI> l_TextureParameterIterator = this.m_Texture.getTextureParameters().iterator();
-
-            while (l_TextureParameterIterator.hasNext()) {
-                TextureParameterI l_TextureParameter = l_TextureParameterIterator.next();
-                GLES20.glTexParameteri(l_TextureParameter.getTarget(), l_TextureParameter.getPname(), l_TextureParameter.getParam());
-            }
-
-            /*
-            GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, m_Textures[0]);
-            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
-            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-            */
-
-            /*
-            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
-            */
-            /*
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, m_Textures[0]);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, m_TextureBitmap, 0);
-            GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
-            GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
-            */
-            //this.m_TextureBitmap.recycle();
+            this.m_Texture.loadBuffers();
         }
         else {
             int err = GLES20.glGetError();
@@ -106,16 +76,13 @@ public class TexturedMesh extends Mesh implements ITexturedMesh {
         GLES20.glBindTexture(this.m_Texture.getTextureBind(), this.m_Textures[0]); //GLES11Ext.GL_TEXTURE_EXTERNAL_OES
         GLES20.glUniform1i(this.getProgram().getUniforms().get("u_Texture"), 0);
 
-        if (this.getProgram().getAttributes().containsKey("a_TexCoordinate")) {
+        GLES20.glVertexAttribPointer(this.getProgram().getAttributes().get("a_TexCoordinate"), 2,
+                GLES20.GL_FLOAT, false, 0, super.getVertexArraySize());
+        GLES20.glEnableVertexAttribArray(this.getProgram().getAttributes().get("a_TexCoordinate"));
 
-            GLES20.glVertexAttribPointer(this.getProgram().getAttributes().get("a_TexCoordinate"), 2,
-                    GLES20.GL_FLOAT, false, 0, super.getVertexArraySize());
-            GLES20.glEnableVertexAttribArray(this.getProgram().getAttributes().get("a_TexCoordinate"));
-
-            int err = GLES20.glGetError();
-            if (err != GLES20.GL_NO_ERROR) {
-                Log.e("error", GLU.gluErrorString(err));
-            }
+        int err = GLES20.glGetError();
+        if (err != GLES20.GL_NO_ERROR) {
+            Log.e("error", GLU.gluErrorString(err));
         }
     }
 

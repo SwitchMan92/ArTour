@@ -6,6 +6,8 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
+import com.google.ar.core.Camera;
+import com.google.ar.core.Frame;
 import com.google.ar.core.Session;
 
 import java.io.IOException;
@@ -50,8 +52,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
 
         try {
-            this.m_Session.update();
-            this.m_Scene.render();
+            Frame l_Frame = this.m_Session.update();
+            Camera l_Camera = l_Frame.getCamera();
+
+            float[] projmtx = new float[16];
+            l_Camera.getProjectionMatrix(projmtx, 0, 0.1f, 100.0f);
+
+            float[] viewmtx = new float[16];
+            l_Camera.getViewMatrix(viewmtx, 0);
+
+            this.m_Scene.render(viewmtx, projmtx);
         }
         catch(Exception e) {
             Log.e("error rendering object", e.toString());

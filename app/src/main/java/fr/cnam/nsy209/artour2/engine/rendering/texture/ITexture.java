@@ -2,7 +2,7 @@ package fr.cnam.nsy209.artour2.engine.rendering.texture;
 
 import java.util.ArrayList;
 
-import fr.cnam.nsy209.artour2.IEngineObject;
+import fr.cnam.nsy209.artour2.engine.rendering.common.IEngineObject;
 
 public interface ITexture extends IEngineObject {
 
@@ -12,4 +12,5 @@ public interface ITexture extends IEngineObject {
     public void                             removeTextureParameterI     (TextureParameterI p_TexParam);
     public void                             clearTextureParameters      ();
     public ArrayList<TextureParameterI>     getTextureParameters        ();
+    public void                             loadBuffers                 ();
 }

@@ -1,5 +1,6 @@
-package fr.cnam.nsy209.artour2.engine.rendering;
+package fr.cnam.nsy209.artour2.engine.rendering.common;
 
+import fr.cnam.nsy209.artour2.engine.rendering.common.IRenderable;
 import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
 
 public abstract class ACRenderable implements IRenderable {

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import fr.cnam.nsy209.artour2.IEngineObject;
+import fr.cnam.nsy209.artour2.engine.rendering.common.IEngineObject;
 import fr.cnam.nsy209.artour2.engine.rendering.mesh.IMesh;
 import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
 import fr.cnam.nsy209.artour2.engine.shading.program.loader.ProgramLoader;
@@ -55,30 +55,30 @@ public class Scene implements IScene {
         }
     }
 
-    private void renderMeshes(ArrayList<IMesh> p_Meshes) {
+    private void renderMeshes(ArrayList<IMesh> p_Meshes, float[] p_ViewMatrix, float[] p_ProjectionMatrix) {
         Iterator<IMesh> l_MeshIterator = p_Meshes.iterator();
 
         while(l_MeshIterator.hasNext()) {
             IMesh l_Mesh = l_MeshIterator.next();
             l_Mesh.bindBuffers();
-            l_Mesh.render();
+            l_Mesh.render(p_ViewMatrix, p_ProjectionMatrix);
             l_Mesh.unbindBuffers();
         }
     }
 
-    public void render(){
+    public void render(float[] p_ViewMatrix, float[] p_ProjectionMatrix){
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
         this.bindBuffers();
 
         if (this.m_NoDepthMeshes.size() > 0) {
             GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-            this.renderMeshes(this.m_NoDepthMeshes);
+            this.renderMeshes(this.m_NoDepthMeshes, p_ViewMatrix, p_ProjectionMatrix);
         }
 
         if (this.m_DepthMeshes.size() > 0) {
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-            this.renderMeshes(this.m_DepthMeshes);
+            this.renderMeshes(this.m_DepthMeshes, p_ViewMatrix, p_ProjectionMatrix);
         }
 
         this.unbindBuffers();

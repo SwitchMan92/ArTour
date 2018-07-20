@@ -2,7 +2,7 @@ package fr.cnam.nsy209.artour2.engine.shading.program;
 
 import java.util.HashMap;
 
-import fr.cnam.nsy209.artour2.IEngineObject;
+import fr.cnam.nsy209.artour2.engine.rendering.common.IEngineObject;
 import fr.cnam.nsy209.artour2.engine.shading.ACShader;
 
 /**

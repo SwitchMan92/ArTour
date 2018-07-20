@@ -1,6 +1,8 @@
-package fr.cnam.nsy209.artour2.engine.rendering;
+package fr.cnam.nsy209.artour2.engine.rendering.common;
 
-import fr.cnam.nsy209.artour2.IEngineObject;
+import com.google.ar.core.Camera;
+
+import fr.cnam.nsy209.artour2.engine.rendering.common.IEngineObject;
 import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
 
 /**
@@ -8,7 +10,7 @@ import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
  */
 
 public interface IRenderable extends IEngineObject {
-    void        render          ();
+    void        render          (float[] p_ViewMatrix, float[] p_ProjectionMatrix);
     void        setProgram      (IProgram p_Program);
     IProgram    getProgram      ();
     void        bindBuffers     ();
