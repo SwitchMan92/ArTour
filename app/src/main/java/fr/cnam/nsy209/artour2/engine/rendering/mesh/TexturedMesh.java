@@ -64,7 +64,7 @@ public class TexturedMesh extends Mesh implements ITexturedMesh {
         else {
             int err = GLES20.glGetError();
             if (err != GLES20.GL_NO_ERROR) {
-                Log.e("error", GLU.gluErrorString(err));
+                Log.e("loadBuffers error", GLU.gluErrorString(err));
             }
         }
     }
@@ -82,7 +82,7 @@ public class TexturedMesh extends Mesh implements ITexturedMesh {
 
         int err = GLES20.glGetError();
         if (err != GLES20.GL_NO_ERROR) {
-            Log.e("error", GLU.gluErrorString(err));
+            Log.e("bindBuffers error", GLU.gluErrorString(err));
         }
     }
 
@@ -93,6 +93,12 @@ public class TexturedMesh extends Mesh implements ITexturedMesh {
             GLES20.glDisableVertexAttribArray(this.getProgram().getAttributes().get("a_TexCoordinate"));
 
         super.unbindBuffers();
+
+
+        int err = GLES20.glGetError();
+        if (err != GLES20.GL_NO_ERROR) {
+            Log.e("unbindBuffers error", GLU.gluErrorString(err));
+        }
     }
 
 }

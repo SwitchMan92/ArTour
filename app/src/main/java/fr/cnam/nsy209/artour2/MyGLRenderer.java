@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.ar.core.Camera;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Session;
+import com.google.ar.core.exceptions.CameraNotAvailableException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,8 +64,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
             this.m_Scene.render(viewmtx, projmtx);
         }
-        catch(Exception e) {
-            Log.e("error rendering object", e.toString());
+        catch(CameraNotAvailableException e) {
+            Log.e("camera error", e.toString());
         }
     }
 

@@ -1,6 +1,10 @@
 package fr.cnam.nsy209.artour2;
 
+import android.util.Log;
+
 import fr.cnam.nsy209.artour2.engine.rendering.mesh.TexturedMesh;
+import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
+import fr.cnam.nsy209.artour2.engine.shading.program.loader.ProgramLoader;
 
 /**
  * Created by ng6fd11 on 17/05/2018.
@@ -31,5 +35,12 @@ public class TexturedMeshSquare extends TexturedMesh {
         super.setIndices(drawOrder);
         super.setTextureCoordinates(texCoords);
         super.setDepthRendering(false);
+
+        try {
+            this.setProgram(ProgramLoader.getProgram("texture"));
+        }
+        catch(Exception e) {
+            Log.e("TexturedSquareMesh error", e.toString());
+        }
     }
 }

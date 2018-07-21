@@ -38,8 +38,7 @@ public class Mesh extends ACRenderable implements IMesh {
     }
 
     private void updateModelMatrix() {
-        float[] l_Matrix = new float[16];
-        this.m_Pose.toMatrix(l_Matrix, 0);
+        this.m_Pose.toMatrix(this.m_ModelMatrix, 0);
     }
 
     public void setPose(Pose p_Pose) {
@@ -91,6 +90,8 @@ public class Mesh extends ACRenderable implements IMesh {
         this.m_IndexBufferObject = new int[1];
         this.setDepthRendering(true);
         this.setWireframe(false);
+        this.m_ModelMatrix = new float[16];
+        this.setColor(new float[]{1f, 0f, 0f, 1f});
         this.setPose(new Pose(new float[]{0f, 0f, 0f}, new float[]{0f, 0f, 0f, 0f}));
     }
 
@@ -115,6 +116,8 @@ public class Mesh extends ACRenderable implements IMesh {
 
         this.bindBuffers();
 
+        GLES20.glDisable(GLES20.GL_CULL_FACE);
+
         if (this.getProgram().getUniforms().containsKey("m_View"))
             GLES20.glUniformMatrix4fv(this.getProgram().getUniforms().get("m_View"), 1, false, p_ViewMatrix, 0);
 
@@ -128,35 +131,42 @@ public class Mesh extends ACRenderable implements IMesh {
 
         int err = GLES20.glGetError();
         if (err != GLES20.GL_NO_ERROR) {
-            Log.e("error", GLU.gluErrorString(err));
+            Log.e("render error", GLU.gluErrorString(err));
         }
     }
 
     public void bindBuffers() {
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, this.m_VertexBufferObject[0]);
 
-        GLES20.glVertexAttribPointer(this.getProgram().getAttributes().get("a_Position"), 3,
+        GLES20.glVertexAttribPointer(this.getProgram().getAttributes().get("v_Position"), 3,
                 GLES20.GL_FLOAT,false, 0, 0);
 
-        GLES20.glEnableVertexAttribArray(this.getProgram().getAttributes().get("a_Position"));
+        GLES20.glEnableVertexAttribArray(this.getProgram().getAttributes().get("v_Position"));
 
         if (this.getProgram().getUniforms().containsKey("a_Color"))
             GLES20.glUniform4fv(this.getProgram().getUniforms().get("a_Color"), 1, this.m_Color, 0);
 
         if (this.getProgram().getUniforms().containsKey("m_Model"))
-            GLES20.glUniform4fv(this.getProgram().getUniforms().get("m_Model"), 1, this.getModelMatrix(), 0);
+            GLES20.glUniformMatrix4fv(this.getProgram().getUniforms().get("m_Model"), 1, false, this.getModelMatrix(), 0);
+
+        int err = GLES20.glGetError();
+        if (err != GLES20.GL_NO_ERROR) {
+            Log.e("bindBuffers error", GLU.gluErrorString(err));
+        }
 
     }
 
     public void unbindBuffers() {
 
-        if (this.getProgram().getUniforms().containsKey("a_Color"))
-            GLES20.glDisableVertexAttribArray(this.getProgram().getAttributes().get("a_Color"));
-
-        GLES20.glDisableVertexAttribArray(this.getProgram().getAttributes().get("a_Position"));
+        GLES20.glDisableVertexAttribArray(this.getProgram().getAttributes().get("v_Position"));
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        int err = GLES20.glGetError();
+        if (err != GLES20.GL_NO_ERROR) {
+            Log.e("unbindBuffers error", GLU.gluErrorString(err));
+        }
     }
 
     protected int getVertexArraySize() {
@@ -186,13 +196,13 @@ public class Mesh extends ACRenderable implements IMesh {
 
             int err = GLES20.glGetError();
             if (err != GLES20.GL_NO_ERROR) {
-                Log.e("error", GLU.gluErrorString(err));
+                Log.e("loadInEngine error", GLU.gluErrorString(err));
             }
         }
         else {
             int err = GLES20.glGetError();
             if (err != GLES20.GL_NO_ERROR) {
-                Log.e("error", GLU.gluErrorString(err));
+                Log.e("loadInEngine error", GLU.gluErrorString(err));
             }
         }
     }
@@ -215,7 +225,7 @@ public class Mesh extends ACRenderable implements IMesh {
 
         int err = GLES20.glGetError();
         if (err != GLES20.GL_NO_ERROR) {
-            Log.e("error", GLU.gluErrorString(err));
+            Log.e("unload error", GLU.gluErrorString(err));
         }
 
         this.m_IndexBuffer.clear();
