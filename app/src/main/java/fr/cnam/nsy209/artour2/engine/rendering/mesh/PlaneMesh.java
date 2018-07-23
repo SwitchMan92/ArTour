@@ -22,7 +22,7 @@ public class PlaneMesh extends Mesh {
         super.setVertices(squareCoords);
         super.setIndices(drawOrder);
         super.setDepthRendering(false);
-
+        super.setWireframe(false);
 
         try {
             this.setProgram(ProgramLoader.getProgram("color"));

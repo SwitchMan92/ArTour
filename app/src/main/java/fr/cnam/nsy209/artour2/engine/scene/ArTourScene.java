@@ -42,7 +42,6 @@ public class ArTourScene extends Scene {
 
         PlaneMesh l_PlaneMesh = new PlaneMesh();
         l_PlaneMesh.setPosition(0f, 0f, 0f);
-        //l_PlaneMesh.setWireframe(true);
 
         this.addMesh(l_PlaneMesh);
 

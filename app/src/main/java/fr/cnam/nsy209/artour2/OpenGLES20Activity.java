@@ -28,7 +28,7 @@ public class OpenGLES20Activity extends AppCompatActivity {
     private MyGLSurfaceView mGLView;
     private Session m_Session;
     private boolean installRequested;
-    private MyGLRenderer mRenderer;
+    private MyGLRenderer m_Renderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +37,8 @@ public class OpenGLES20Activity extends AppCompatActivity {
         ProgramLoader.setContext(this);
 
         mGLView = new MyGLSurfaceView(this);
-        mRenderer = new MyGLRenderer(this);
-        mGLView.setRenderer(this.mRenderer);
+        m_Renderer = new MyGLRenderer(this);
+        mGLView.setRenderer(this.m_Renderer);
         this.mGLView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -70,7 +70,7 @@ public class OpenGLES20Activity extends AppCompatActivity {
                 }
 
                 this.m_Session = new Session(/* context= */ this);
-                this.mRenderer.setSession(this.m_Session);
+                this.m_Renderer.setSession(this.m_Session);
                 this.m_Session.resume();
 
             } catch (UnavailableArcoreNotInstalledException
@@ -104,16 +104,18 @@ public class OpenGLES20Activity extends AppCompatActivity {
         super.onResume();
         this.updateSession();
         this.mGLView.onResume();
-        this.mRenderer.setSession(this.m_Session);
+        this.m_Renderer.setSession(this.m_Session);
+        this.m_Renderer.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         if (this.m_Session != null) {
-            this.mGLView.onPause();
             this.m_Session.pause();
-            this.mRenderer.setSession(this.m_Session);
+            this.m_Renderer.setSession(this.m_Session);
+            this.m_Renderer.onPause();
+            this.mGLView.onPause();
         }
     }
 

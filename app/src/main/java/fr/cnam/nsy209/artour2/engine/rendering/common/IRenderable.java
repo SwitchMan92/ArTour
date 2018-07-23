@@ -10,7 +10,7 @@ import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
  */
 
 public interface IRenderable extends IEngineObject {
-    void        render          (float[] p_ViewMatrix, float[] p_ProjectionMatrix);
+    void        render          (float[] p_ViewMatrix, float[] p_ProjectionMatrix, float[] p_ViewProjMatrix);
     void        setProgram      (IProgram p_Program);
     IProgram    getProgram      ();
     void        bindBuffers     ();

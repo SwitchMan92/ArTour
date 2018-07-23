@@ -55,37 +55,37 @@ public class Scene implements IScene {
         }
     }
 
-    private void renderMeshes(ArrayList<IMesh> p_Meshes, float[] p_ViewMatrix, float[] p_ProjectionMatrix) {
+    private void renderMeshes(ArrayList<IMesh> p_Meshes, float[] p_ViewMatrix, float[] p_ProjectionMatrix, float[] p_ViewProjMatrix) {
         Iterator<IMesh> l_MeshIterator = p_Meshes.iterator();
 
         while(l_MeshIterator.hasNext()) {
             IMesh l_Mesh = l_MeshIterator.next();
-            l_Mesh.bindBuffers();
-            l_Mesh.render(p_ViewMatrix, p_ProjectionMatrix);
-            l_Mesh.unbindBuffers();
+            //l_Mesh.bindBuffers();
+            l_Mesh.render(p_ViewMatrix, p_ProjectionMatrix, p_ViewProjMatrix);
+            //l_Mesh.unbindBuffers();
         }
     }
 
-    public void render(float[] p_ViewMatrix, float[] p_ProjectionMatrix){
+    public void render(float[] p_ViewMatrix, float[] p_ProjectionMatrix, float[] p_ViewProjMatrix){
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
         this.bindBuffers();
 
         if (this.m_NoDepthMeshes.size() > 0) {
             GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-            this.renderMeshes(this.m_NoDepthMeshes, p_ViewMatrix, p_ProjectionMatrix);
+            this.renderMeshes(this.m_NoDepthMeshes, p_ViewMatrix, p_ProjectionMatrix, p_ViewProjMatrix);
         }
 
         if (this.m_DepthMeshes.size() > 0) {
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-            this.renderMeshes(this.m_DepthMeshes, p_ViewMatrix, p_ProjectionMatrix);
+            this.renderMeshes(this.m_DepthMeshes, p_ViewMatrix, p_ProjectionMatrix, p_ViewProjMatrix);
         }
 
         this.unbindBuffers();
 
         int err = GLES20.glGetError();
         if (err != GLES20.GL_NO_ERROR) {
-            Log.e("error", GLU.gluErrorString(err));
+            Log.e("Scene bindbuffer error", GLU.gluErrorString(err));
         }
     };
 

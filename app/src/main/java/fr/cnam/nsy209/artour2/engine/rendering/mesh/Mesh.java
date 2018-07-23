@@ -2,6 +2,7 @@ package fr.cnam.nsy209.artour2.engine.rendering.mesh;
 
 import android.opengl.GLES20;
 import android.opengl.GLU;
+import android.opengl.Matrix;
 import android.util.Log;
 
 import com.google.ar.core.Pose;
@@ -111,18 +112,27 @@ public class Mesh extends ACRenderable implements IMesh {
         m_IndexBuffer.position(0);
     }
 
-    public void render(float[] p_ViewMatrix, float[] p_ProjectionMatrix) {
+    public void render(float[] p_ViewMatrix, float[] p_ProjectionMatrix, float[] p_ViewProjMatrix) {
         this.getProgram().setActive(true);
 
         this.bindBuffers();
 
-        GLES20.glDisable(GLES20.GL_CULL_FACE);
+        //GLES20.glDisable(GLES20.GL_CULL_FACE);
+
+        float[] l_ModelViewProj = new float[16];
+        Matrix.multiplyMM(l_ModelViewProj, 0, p_ViewProjMatrix, 0, this.getModelMatrix(), 0);
 
         if (this.getProgram().getUniforms().containsKey("m_View"))
             GLES20.glUniformMatrix4fv(this.getProgram().getUniforms().get("m_View"), 1, false, p_ViewMatrix, 0);
 
         if (this.getProgram().getUniforms().containsKey("m_Projection"))
             GLES20.glUniformMatrix4fv(this.getProgram().getUniforms().get("m_Projection"), 1, false, p_ProjectionMatrix, 0);
+
+        if (this.getProgram().getUniforms().containsKey("m_ViewProj"))
+            GLES20.glUniformMatrix4fv(this.getProgram().getUniforms().get("m_ViewProj"), 1, false, p_ViewProjMatrix, 0);
+
+        if (this.getProgram().getUniforms().containsKey("m_ModelViewProj"))
+            GLES20.glUniformMatrix4fv(this.getProgram().getUniforms().get("m_ModelViewProj"), 1, false, l_ModelViewProj, 0);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, this.m_IndexBufferObject[0]);
         GLES20.glDrawElements(this.m_DrawMode, this.m_IndexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, 0);
@@ -131,7 +141,7 @@ public class Mesh extends ACRenderable implements IMesh {
 
         int err = GLES20.glGetError();
         if (err != GLES20.GL_NO_ERROR) {
-            Log.e("render error", GLU.gluErrorString(err));
+            Log.e("Mesh render error", GLU.gluErrorString(err));
         }
     }
 
@@ -143,15 +153,15 @@ public class Mesh extends ACRenderable implements IMesh {
 
         GLES20.glEnableVertexAttribArray(this.getProgram().getAttributes().get("v_Position"));
 
-        if (this.getProgram().getUniforms().containsKey("a_Color"))
-            GLES20.glUniform4fv(this.getProgram().getUniforms().get("a_Color"), 1, this.m_Color, 0);
+        if (this.getProgram().getUniforms().containsKey("v_Color"))
+            GLES20.glUniform4fv(this.getProgram().getUniforms().get("v_Color"), 1, this.m_Color, 0);
 
         if (this.getProgram().getUniforms().containsKey("m_Model"))
             GLES20.glUniformMatrix4fv(this.getProgram().getUniforms().get("m_Model"), 1, false, this.getModelMatrix(), 0);
 
         int err = GLES20.glGetError();
         if (err != GLES20.GL_NO_ERROR) {
-            Log.e("bindBuffers error", GLU.gluErrorString(err));
+            Log.e("Mesh bindBuffers error", GLU.gluErrorString(err));
         }
 
     }
@@ -165,7 +175,7 @@ public class Mesh extends ACRenderable implements IMesh {
 
         int err = GLES20.glGetError();
         if (err != GLES20.GL_NO_ERROR) {
-            Log.e("unbindBuffers error", GLU.gluErrorString(err));
+            Log.e("Mesh unbindBuffers error", GLU.gluErrorString(err));
         }
     }
 
