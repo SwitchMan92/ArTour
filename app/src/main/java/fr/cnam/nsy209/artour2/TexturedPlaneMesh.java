@@ -10,7 +10,7 @@ import fr.cnam.nsy209.artour2.engine.shading.program.loader.ProgramLoader;
  * Created by ng6fd11 on 17/05/2018.
  */
 
-public class TexturedMeshSquare extends TexturedMesh {
+public class TexturedPlaneMesh extends TexturedMesh {
 
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
@@ -28,7 +28,7 @@ public class TexturedMeshSquare extends TexturedMesh {
 
     static short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
 
-    public TexturedMeshSquare() {
+    public TexturedPlaneMesh() {
         super();
         this.setColor(new float[]{ 0f, 0f, 0f, 0f });
         super.setVertices(squareCoords);

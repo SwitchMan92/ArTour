@@ -117,8 +117,6 @@ public class Mesh extends ACRenderable implements IMesh {
 
         this.bindBuffers();
 
-        //GLES20.glDisable(GLES20.GL_CULL_FACE);
-
         float[] l_ModelViewProj = new float[16];
         Matrix.multiplyMM(l_ModelViewProj, 0, p_ViewProjMatrix, 0, this.getModelMatrix(), 0);
 
