@@ -45,13 +45,17 @@ public class GeoPoint {
         return new GeoPoint(p_Operand.getLatitude() + this.getLatitude(), p_Operand.getLongitude() + this.getLongitude());
     }
 
-    public Pose getRelativePose(GeoPoint p_Operand) throws Exception {
-        GeoPoint l_Difference = this.subtract(p_Operand);
-
-        float l_Latitude = (float)(LATITUDE_LENGTH * l_Difference.getLatitude());
-        float l_Longitude = (float)(LONGITUDE_LENGTH * l_Difference.getLongitude() * Math.cos(l_Latitude));
-
+    public Pose getRelativePose() throws Exception {
+        float l_Latitude = (float)(LATITUDE_LENGTH * this.getLatitude());
+        float l_Longitude = (float)(LONGITUDE_LENGTH * this.getLongitude() * Math.cos(l_Latitude));
         return new Pose(new float[]{l_Latitude, l_Longitude, 0f}, new float[]{0f, 0f, 0f});
     }
+
+    /*
+    public GeoPoint getRelativeGeoPoint(Pose p_Pose) {
+        double l_X = p_Pose.qx();
+        double l_Y = p_Pose.qy();
+        double l_Z = p_Pose.qz();
+    }*/
 
 }

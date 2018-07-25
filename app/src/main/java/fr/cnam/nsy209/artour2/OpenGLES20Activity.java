@@ -1,6 +1,7 @@
 package fr.cnam.nsy209.artour2;
 
 import android.opengl.GLSurfaceView;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,8 +17,15 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.cnam.nsy209.artour2.engine.shading.program.loader.ProgramLoader;
+import fr.cnam.nsy209.artour2.location.data.IPlacesService;
+import fr.cnam.nsy209.artour2.location.data.Place;
 import fr.common.helpers.CameraPermissionHelper;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by ng6fd11 on 17/05/2018.
@@ -30,9 +38,47 @@ public class OpenGLES20Activity extends AppCompatActivity {
     private boolean installRequested;
     private MyGLRenderer m_Renderer;
 
+
+    class ListPlacesTask extends AsyncTask<String,Void,List<Place>> {
+
+        @Override
+        protected List<Place> doInBackground(String... params) {
+
+            IPlacesService githubService = new Retrofit.Builder()
+                    .baseUrl(IPlacesService.ENDPOINT)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                    .create(IPlacesService.class);
+
+            String user = params[0];
+
+            try {
+                List<Place> placesList = githubService.listPlaces(params[0], params[1]).execute().body();
+                return placesList;
+            }
+            catch (Exception e) {
+                Log.e("IPlacesService", e.toString());
+                return new ArrayList<Place>();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Place> p_Places) {
+            super.onPostExecute(p_Places);
+
+            for (Place l_Place: p_Places) {
+                Log.d("IPlacesService", l_Place.getName());
+            }
+
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        new ListPlacesTask().execute("48.858093", "2.294694");
 
         ProgramLoader.setContext(this);
 
