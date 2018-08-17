@@ -3,10 +3,14 @@ package fr.cnam.nsy209.artour2.location.data;
 import fr.cnam.nsy209.artour2.location.GeoPoint;
 
 public class Place {
-    private String      m_Name;
-    private String      m_Details;
-    private GeoPoint    m_Location;
+    public String       name;
+    public String       details;
+    public double       latitude;
+    public double       longitude;
 
+    //private GeoPoint    m_Location;
+
+    /*
     public String getName       ()      { return this.m_Name; }
     public String getDetails    ()      { return this.m_Details; }
     public GeoPoint getLocation ()      { return this.m_Location; }
@@ -26,4 +30,5 @@ public class Place {
     public void setLocation(GeoPoint p_Location) {
         this.m_Location = p_Location;
     }
+    */
 }

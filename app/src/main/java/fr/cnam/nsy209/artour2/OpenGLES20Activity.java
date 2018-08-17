@@ -1,8 +1,12 @@
 package fr.cnam.nsy209.artour2;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
@@ -44,16 +48,14 @@ public class OpenGLES20Activity extends AppCompatActivity {
         @Override
         protected List<Place> doInBackground(String... params) {
 
-            IPlacesService githubService = new Retrofit.Builder()
+            IPlacesService placesService = new Retrofit.Builder()
                     .baseUrl(IPlacesService.ENDPOINT)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
                     .create(IPlacesService.class);
 
-            String user = params[0];
-
             try {
-                List<Place> placesList = githubService.listPlaces(params[0], params[1]).execute().body();
+                List<Place> placesList = placesService.listPlaces(params[0], params[1]).execute().body();
                 return placesList;
             }
             catch (Exception e) {
@@ -67,7 +69,7 @@ public class OpenGLES20Activity extends AppCompatActivity {
             super.onPostExecute(p_Places);
 
             for (Place l_Place: p_Places) {
-                Log.d("IPlacesService", l_Place.getName());
+                Log.d("IPlacesService", l_Place.name);
             }
 
         }
@@ -114,6 +116,9 @@ public class OpenGLES20Activity extends AppCompatActivity {
                     CameraPermissionHelper.requestCameraPermission(this);
                     return;
                 }
+
+                if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED))
+                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.INTERNET}, 1);
 
                 this.m_Session = new Session(/* context= */ this);
                 this.m_Renderer.setSession(this.m_Session);
