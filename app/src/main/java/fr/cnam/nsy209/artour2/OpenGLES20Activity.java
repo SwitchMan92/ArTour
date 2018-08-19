@@ -3,7 +3,6 @@ package fr.cnam.nsy209.artour2;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.opengl.GLSurfaceView;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,16 +19,8 @@ import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.cnam.nsy209.artour2.engine.shading.program.loader.ProgramLoader;
-import fr.cnam.nsy209.artour2.location.data.IPlacesService;
-import fr.cnam.nsy209.artour2.location.data.Place;
 import fr.common.helpers.CameraPermissionHelper;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by ng6fd11 on 17/05/2018.
@@ -37,57 +28,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OpenGLES20Activity extends AppCompatActivity {
 
-    private MyGLSurfaceView mGLView;
+    private MyGLSurfaceView m_GlView;
     private Session m_Session;
     private boolean installRequested;
     private MyGLRenderer m_Renderer;
 
-
-    class ListPlacesTask extends AsyncTask<String,Void,List<Place>> {
-
-        @Override
-        protected List<Place> doInBackground(String... params) {
-
-            IPlacesService placesService = new Retrofit.Builder()
-                    .baseUrl(IPlacesService.ENDPOINT)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                    .create(IPlacesService.class);
-
-            try {
-                List<Place> placesList = placesService.listPlaces(params[0], params[1]).execute().body();
-                return placesList;
-            }
-            catch (Exception e) {
-                Log.e("IPlacesService", e.toString());
-                return new ArrayList<Place>();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<Place> p_Places) {
-            super.onPostExecute(p_Places);
-
-            for (Place l_Place: p_Places) {
-                Log.d("IPlacesService", l_Place.name);
-            }
-
-        }
-    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new ListPlacesTask().execute("48.858093", "2.294694");
-
         ProgramLoader.setContext(this);
 
-        mGLView = new MyGLSurfaceView(this);
+        m_GlView = new MyGLSurfaceView(this);
         m_Renderer = new MyGLRenderer(this);
-        mGLView.setRenderer(this.m_Renderer);
-        this.mGLView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+        m_GlView.setRenderer(this.m_Renderer);
+        this.m_GlView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(
@@ -95,7 +52,7 @@ public class OpenGLES20Activity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         this.installRequested = false;
-        setContentView(mGLView);
+        setContentView(m_GlView);
     }
 
     private void updateSession() {
@@ -154,7 +111,7 @@ public class OpenGLES20Activity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         this.updateSession();
-        this.mGLView.onResume();
+        this.m_GlView.onResume();
         this.m_Renderer.setSession(this.m_Session);
         this.m_Renderer.onResume();
     }
@@ -166,10 +123,9 @@ public class OpenGLES20Activity extends AppCompatActivity {
             this.m_Session.pause();
             this.m_Renderer.setSession(this.m_Session);
             this.m_Renderer.onPause();
-            this.mGLView.onPause();
+            this.m_GlView.onPause();
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
@@ -182,5 +138,4 @@ public class OpenGLES20Activity extends AppCompatActivity {
             finish();
         }
     }
-
 }

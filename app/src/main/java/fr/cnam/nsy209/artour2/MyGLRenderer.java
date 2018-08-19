@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.google.ar.core.Camera;
 import com.google.ar.core.Frame;
+import com.google.ar.core.PointCloud;
 import com.google.ar.core.Session;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
 
@@ -70,6 +71,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
             Frame l_Frame = this.m_Session.update();
             Camera l_Camera = l_Frame.getCamera();
+
+            PointCloud l_PointCloud = l_Frame.acquirePointCloud();
+
 
             float[] l_ProjectionMatrix = new float[16];
             l_Camera.getProjectionMatrix(l_ProjectionMatrix, 0, 0.1f, 100.0f);

@@ -22,6 +22,10 @@ import fr.cnam.nsy209.artour2.engine.shading.program.IProgram;
 
 public class Mesh extends ACRenderable implements IMesh {
 
+    protected static final int BYTES_PER_FLOAT    = Float.SIZE / 8;
+    protected static final int FLOATS_PER_POINT   = 4; // X,Y,Z,confidence.
+    protected static final int BYTES_PER_POINT    = BYTES_PER_FLOAT * FLOATS_PER_POINT;
+
     protected FloatBuffer       m_VertexBuffer;
     protected ShortBuffer       m_IndexBuffer;
 
@@ -32,7 +36,7 @@ public class Mesh extends ACRenderable implements IMesh {
     protected   int             m_DrawMode;
     protected   Pose            m_Pose;
     protected   float[]         m_ModelMatrix;
-
+    protected   int             m_VboSize;
 
     public float[] getModelMatrix() {
         return this.m_ModelMatrix;
@@ -216,10 +220,13 @@ public class Mesh extends ACRenderable implements IMesh {
     }
 
     public void loadBuffers(){
+
+        this.m_VboSize = BYTES_PER_FLOAT * this.m_VertexBuffer.capacity();
+
         GLES20.glBufferSubData(
                 GLES20.GL_ARRAY_BUFFER,
                 0,
-                4 * this.m_VertexBuffer.capacity(),
+                this.m_VboSize,
                 this.m_VertexBuffer
         );
     }

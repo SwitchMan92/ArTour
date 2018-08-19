@@ -28,7 +28,7 @@ public class TexturedPlaneMesh extends TexturedMesh {
 
     static short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
 
-    public TexturedPlaneMesh() {
+    public TexturedPlaneMesh() throws Exception {
         super();
         this.setColor(new float[]{ 0f, 0f, 0f, 0f });
         super.setVertices(squareCoords);
@@ -36,11 +36,6 @@ public class TexturedPlaneMesh extends TexturedMesh {
         super.setTextureCoordinates(texCoords);
         super.setDepthRendering(false);
 
-        try {
-            this.setProgram(ProgramLoader.getProgram("texture"));
-        }
-        catch(Exception e) {
-            Log.e("TexturedSquareMesh error", e.toString());
-        }
+        this.setProgram(ProgramLoader.getProgram("texture"));
     }
 }
