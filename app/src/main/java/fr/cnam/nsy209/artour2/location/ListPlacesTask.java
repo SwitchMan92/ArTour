@@ -26,15 +26,15 @@ public class ListPlacesTask extends AsyncTask<String,Void,List<Place>> {
                 .build()
                 .create(IPlacesService.class);
 
-        try {
-            List<Place> placesList = placesService.listPlaces(params[0], params[1]).execute().body();
-            return placesList;
+            try {
+                List<Place> placesList = placesService.listPlaces(params[0], params[1]).execute().body();
+                return placesList;
+            }
+            catch (Exception e) {
+                Log.e("IPlacesService", e.toString());
+                return new ArrayList<Place>();
+            }
         }
-        catch (Exception e) {
-            Log.e("IPlacesService", e.toString());
-            return new ArrayList<Place>();
-        }
-    }
 
         @Override
         protected void onPostExecute(List<Place> p_Places) {

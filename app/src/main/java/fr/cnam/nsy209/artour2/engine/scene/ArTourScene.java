@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.ar.core.Session;
 
+import java.util.HashMap;
 import java.util.List;
 
 import fr.cnam.nsy209.artour2.TexturedPlaneMesh;
@@ -20,10 +21,12 @@ import fr.cnam.nsy209.artour2.location.data.Place;
 public class ArTourScene extends Scene implements ListPlacesTaskListener{
 
     private ListPlacesTask m_PlacesTask;
+    private HashMap<String, Place> m_Places;
 
     public void onPostExecute(List<Place> p_Places) {
         for (Place l_Place: p_Places) {
-            Log.d("IPlacesService", l_Place.name);
+            if (!this.m_Places.containsKey(l_Place.name))
+               this.m_Places.put(l_Place.name, l_Place);
         }
     }
 

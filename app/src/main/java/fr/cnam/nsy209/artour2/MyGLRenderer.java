@@ -7,6 +7,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import com.google.ar.core.Anchor;
 import com.google.ar.core.Camera;
 import com.google.ar.core.Frame;
 import com.google.ar.core.PointCloud;
@@ -15,6 +16,8 @@ import com.google.ar.core.exceptions.CameraNotAvailableException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -74,6 +77,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
             PointCloud l_PointCloud = l_Frame.acquirePointCloud();
 
+            Collection<Anchor> l_Anchors = l_Frame.getUpdatedAnchors();
+
+            Anchor l_Anchor = (Anchor)l_Anchors.toArray()[0];
+
+            l_Frame.
 
             float[] l_ProjectionMatrix = new float[16];
             l_Camera.getProjectionMatrix(l_ProjectionMatrix, 0, 0.1f, 100.0f);
